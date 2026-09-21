@@ -1,0 +1,22 @@
+{
+    "left": {
+        "team": "MANU",
+        "name": "DR. STANK",
+        "score": 12,
+        "setWins": 0,
+        "bgImage": "",
+        "logo": "assets/p1_Manchester.png",
+        "showLogo": true,
+        "color": "#ffc411"
+    },
+    "right": {
+        "team": "PFW",
+        "name": "ESPURRZ",
+        "score": 12,
+        "setWins": 0,
+        "bgImage": "",
+        "logo": "assets/p2_New Trunk Logo.png",
+        "showLogo": true,
+        "color": "#cfb991"
+    }
+}

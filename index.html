@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smash Ultimate Overlay</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="overlay-container">
+        <!-- Left Side -->
+        <div class="player-side left-side">
+            <div class="set-wins" id="left-wins">
+                <div class="diamond" id="left-win-1"></div>
+                <div class="diamond" id="left-win-2"></div>
+            </div>
+            
+            <div class="player-info">
+                <div class="character-bg" id="left-bg"></div>
+                <!-- Logo on the outside (left side) -->
+                <div class="logo-container">
+                    <img id="left-logo" src="" alt="" style="display: none;">
+                </div>
+                <div class="names">
+                    <span class="team-name" id="left-team"></span>
+                    <span class="player-name" id="left-name"></span>
+                </div>
+            </div>
+            <div class="score-box left-score-box">
+                <span class="score-text" id="left-score">0</span>
+            </div>
+        </div>
+
+        <!-- Center Dash -->
+        <div class="center-divider">
+            <span class="dash">-</span>
+        </div>
+
+        <!-- Right Side -->
+        <div class="player-side right-side">
+            <div class="score-box right-score-box">
+                <span class="score-text" id="right-score">0</span>
+            </div>
+            <div class="player-info right-info">
+                <div class="character-bg" id="right-bg"></div>
+                <div class="names right-names">
+                    <span class="team-name" id="right-team"></span>
+                    <span class="player-name" id="right-name"></span>
+                </div>
+                <!-- Logo on the outside (right side) -->
+                <div class="logo-container">
+                    <img id="right-logo" src="" alt="" style="display: none;">
+                </div>
+            </div>
+            
+            <div class="set-wins" id="right-wins">
+                <div class="diamond" id="right-win-1"></div>
+                <div class="diamond" id="right-win-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Links to your JS file -->
+    <script src="connection.js"></script>
+</body>
+</html>
