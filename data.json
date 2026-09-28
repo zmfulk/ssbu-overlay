@@ -1,22 +1,28 @@
 {
+    "league": "GLEC",
+    "seriesText": "BEST OF 3",
     "left": {
-        "team": "MANU",
-        "name": "DR. STANK",
-        "score": 12,
-        "setWins": 0,
-        "bgImage": "",
-        "logo": "assets/p1_Manchester.png",
-        "showLogo": true,
-        "color": "#ffc411"
-    },
-    "right": {
         "team": "PFW",
-        "name": "ESPURRZ",
-        "score": 12,
+        "name": "starstriker",
+        "score": 0,
         "setWins": 0,
-        "bgImage": "",
+        "bgImage": "https://www.smashbros.com/assets_v2/img/fighter/incineroar/main.png",
+        "bgOffsetY": 20,
+        "bgZoom": 100,
         "logo": "assets/p2_New Trunk Logo.png",
         "showLogo": true,
-        "color": "#cfb991"
+        "color": "#CFB991"
+    },
+    "right": {
+        "team": "MIZ",
+        "name": " player4555556",
+        "score": 3,
+        "setWins": 0,
+        "bgImage": "https://www.smashbros.com/assets_v2/img/fighter/chrom/main.png",
+        "bgOffsetY": 11,
+        "bgZoom": 95,
+        "logo": "assets/p1_Mizzou_Esports.png",
+        "showLogo": true,
+        "color": "#ffce09"
     }
 }
