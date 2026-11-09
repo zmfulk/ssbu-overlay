@@ -1,0 +1,14 @@
+# Ignore the live data file
+data.json
+
+# Ignore PyInstaller build files
+build/
+dist/
+*.spec
+
+# Ignore Python caches
+__pycache__/
+*.pyc
+
+# Ignore locally downloaded splash arts
+assets/
