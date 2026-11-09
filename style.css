@@ -289,3 +289,33 @@ body {
 img[alt="GLEC"] {
     height: 36px;
 }
+
+/* Ensure the parent containers can anchor absolute positioning */
+.player-side {
+    position: relative; 
+}
+
+/* Base styling for the text */
+.stocks-taken-label {
+    position: absolute;
+    bottom: -32px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap; /* Prevents squishing/wrapping */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9), -1px -1px 2px rgba(0, 0, 0, 0.9);
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+/* Left alignment */
+.left-stocks {
+    left: 80px; /* Bypasses the diamond wins to align cleanly with the black box edge */
+}
+
+/* Right alignment */
+.right-stocks {
+    right: 80px; /* Bypasses the diamond wins on the right */
+}

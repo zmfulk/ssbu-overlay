@@ -31,6 +31,11 @@ async function updateOverlay() {
                 elementsToFade.push(document.getElementById('series-label'));
             }
 
+            // Show Stocks Check
+            if (data.showStocksTaken !== previousData.showStocksTaken) {
+                document.querySelectorAll('.stocks-taken-label').forEach(el => elementsToFade.push(el));
+            }
+
             // --- Left Side Checks ---
             if (data.left.score !== previousData.left.score) {
                 elementsToFade.push(document.getElementById('left-score'));
@@ -52,6 +57,11 @@ async function updateOverlay() {
                 elementsToFade.push(document.querySelector('.left-side .player-info'));
             }
 
+            if (data.left.stocksTaken !== previousData.left.stocksTaken) {
+                elementsToFade.push(document.getElementById('left-stocks-taken'));
+            }
+            
+
             // --- Right Side Checks ---
             if (data.right.score !== previousData.right.score) {
                 elementsToFade.push(document.getElementById('right-score'));
@@ -64,6 +74,10 @@ async function updateOverlay() {
             }
             if (data.right.bgImage !== previousData.right.bgImage) {
                 elementsToFade.push(document.getElementById('right-bg'));
+            }
+
+            if (data.right.stocksTaken !== previousData.right.stocksTaken) {
+                elementsToFade.push(document.getElementById('right-stocks-taken'));
             }
             
             const rightVisualsChanged = data.right.logo !== previousData.right.logo || 
@@ -93,7 +107,7 @@ async function updateOverlay() {
 }
 
 function applyDataToDOM(data) {
-    // --- Update Series Text (NEW) ---
+    // --- Update Series Text ---
     const seriesEl = document.getElementById('series-label');
     if (seriesEl) {
         // Use the text provided or default to empty
@@ -151,6 +165,9 @@ function applyDataToDOM(data) {
         leftLogo.style.display = 'none';
     }
 
+    const leftStocksEl = document.getElementById('left-stocks-taken');
+    if (leftStocksEl) leftStocksEl.textContent = data.left.stocksTaken || 0;
+
     document.getElementById('left-win-1').className = data.left.setWins >= 1 ? 'diamond filled' : 'diamond';
     document.getElementById('left-win-2').className = data.left.setWins >= 2 ? 'diamond filled' : 'diamond';
 
@@ -186,9 +203,19 @@ function applyDataToDOM(data) {
         rightLogo.style.display = 'none';
     }
 
+    const rightStocksEl = document.getElementById('right-stocks-taken');
+    if (rightStocksEl) rightStocksEl.textContent = data.right.stocksTaken || 0;
+
     document.getElementById('right-win-1').className = data.right.setWins >= 1 ? 'diamond filled' : 'diamond';
     document.getElementById('right-win-2').className = data.right.setWins >= 2 ? 'diamond filled' : 'diamond';
+
+    // --- Stocks Taken Visibility Toggle ---
+    const showStocks = data.showStocksTaken !== false;
+    document.querySelectorAll('.stocks-taken-label').forEach(el => {
+        el.style.display = showStocks ? 'block' : 'none';
+    });
 }
+
 
 setInterval(updateOverlay, 500);
 updateOverlay();

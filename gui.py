@@ -136,6 +136,7 @@ def update_overlay(silent=False):
         data = {
             "league": league_var.get(),
             "seriesText": series_var.get(),
+            "showStocksTaken": show_stocks_taken_var.get(),
             "left": {
                 "team": left_team_var.get(),
                 "name": left_name_var.get(),
@@ -146,6 +147,7 @@ def update_overlay(silent=False):
                 "bgZoom": left_zoom_var.get(),
                 "logo": left_logo_var.get(),
                 "showLogo": left_show_logo_var.get(),
+                "stocksTaken": left_stocks_taken_var.get(),
                 "color": left_color_var.get()
             },
             "right": {
@@ -158,6 +160,7 @@ def update_overlay(silent=False):
                 "bgZoom": right_zoom_var.get(),
                 "logo": right_logo_var.get(),
                 "showLogo": right_show_logo_var.get(),
+                "stocksTaken": right_stocks_taken_var.get(),
                 "color": right_color_var.get()
             }
         }
@@ -171,8 +174,50 @@ def update_overlay(silent=False):
     except Exception:
         pass 
 
+is_auto_updating = False
+
 def auto_update_score(*args):
+    global is_auto_updating
+    
+    # If the script is already processing a score change, ignore the echoes!
+    if is_auto_updating:
+        return
+        
+    is_auto_updating = True
+
+    try:
+        curr_l_name = left_name_var.get()
+        curr_l_score = left_score_var.get()
+        curr_r_name = right_name_var.get()
+        curr_r_score = right_score_var.get()
+
+        add_to_right = 0
+        add_to_left = 0
+
+        if curr_l_name == tracker_state["left_name"] and curr_r_name == tracker_state["right_name"]:
+            if curr_l_score < tracker_state["left_score"]:
+                add_to_right = tracker_state["left_score"] - curr_l_score
+            
+            if curr_r_score < tracker_state["right_score"]:
+                add_to_left = tracker_state["right_score"] - curr_r_score
+
+        tracker_state["left_name"] = curr_l_name
+        tracker_state["left_score"] = curr_l_score
+        tracker_state["right_name"] = curr_r_name
+        tracker_state["right_score"] = curr_r_score
+
+        if add_to_right > 0:
+            right_stocks_taken_var.set(right_stocks_taken_var.get() + add_to_right)
+        if add_to_left > 0:
+            left_stocks_taken_var.set(left_stocks_taken_var.get() + add_to_left)
+
+    except Exception:
+        pass 
+
     update_overlay(silent=True)
+    
+    # Unlock the script so it can listen for the next real click
+    is_auto_updating = False
 
 def apply_character(side):
     """Sets the background image URL and handles custom zoom/offset presets"""
@@ -248,6 +293,7 @@ def swap_sides():
     left_set_var.set(right_set_var.get())
     right_set_var.set(temp_set)
 
+
     temp_bg = left_bg_var.get()
     left_bg_var.set(right_bg_var.get())
     right_bg_var.set(temp_bg)
@@ -267,6 +313,10 @@ def swap_sides():
     temp_show = left_show_logo_var.get()
     left_show_logo_var.set(right_show_logo_var.get())
     right_show_logo_var.set(temp_show)
+
+    temp_stocks_taken = left_stocks_taken_var.get()
+    left_stocks_taken_var.set(right_stocks_taken_var.get())
+    right_stocks_taken_var.set(temp_stocks_taken)
 
     temp_color = left_color_var.get()
     left_color_var.set(right_color_var.get())
@@ -350,6 +400,15 @@ root.geometry("700x750")
 root.configure(padx=20, pady=20)
 
 # --- Variables ---
+left_stocks_taken_var = tk.IntVar(value=saved_data["left"].get("stocksTaken", 0) if saved_data and "stocksTaken" in saved_data["left"] else 0)
+left_stocks_taken_var.trace_add("write", auto_update_score)
+
+right_stocks_taken_var = tk.IntVar(value=saved_data["right"].get("stocksTaken", 0) if saved_data and "stocksTaken" in saved_data["right"] else 0)
+right_stocks_taken_var.trace_add("write", auto_update_score)
+
+show_stocks_taken_var = tk.BooleanVar(value=saved_data.get("showStocksTaken", True) if saved_data else True)
+show_stocks_taken_var.trace_add("write", auto_update_score)
+
 league_var = tk.StringVar(value=league_val)
 league_var.trace_add("write", auto_update_score)
 
@@ -358,6 +417,8 @@ series_var.trace_add("write", auto_update_score)
 
 left_team_var = tk.StringVar(value=saved_data["left"]["team"] if saved_data else "MANU")
 left_name_var = tk.StringVar(value=saved_data["left"]["name"] if saved_data else "DR. STANK")
+
+
 left_score_var = tk.IntVar(value=saved_data["left"]["score"] if saved_data else 0)
 left_set_var = tk.IntVar(value=saved_data["left"]["setWins"] if saved_data else 0)
 left_bg_var = tk.StringVar(value=saved_data["left"]["bgImage"] if saved_data else "") 
@@ -380,12 +441,24 @@ right_logo_var = tk.StringVar(value=saved_data["right"]["logo"] if saved_data el
 right_show_logo_var = tk.BooleanVar(value=saved_data["right"]["showLogo"] if saved_data else True)
 right_color_var = tk.StringVar(value=saved_data["right"]["color"] if saved_data else "#4facfe")
 
+# --- Tracker Memory ---
+tracker_state = {
+    "left_name": left_name_var.get(),
+    "left_score": left_score_var.get(),
+    "right_name": right_name_var.get(),
+    "right_score": right_score_var.get()
+}
+
 left_score_var.trace_add("write", auto_update_score)
 right_score_var.trace_add("write", auto_update_score)
 left_offset_var.trace_add("write", auto_update_score)
 left_zoom_var.trace_add("write", auto_update_score)
 right_offset_var.trace_add("write", auto_update_score)
 right_zoom_var.trace_add("write", auto_update_score)
+left_name_var.trace_add("write", auto_update_score)
+right_name_var.trace_add("write", auto_update_score)
+
+
 
 status_var = tk.StringVar()
 
@@ -420,6 +493,9 @@ ttk.Spinbox(left_frame, from_=0, to=99, textvariable=left_score_var).pack(fill=t
 
 ttk.Label(left_frame, text="Set Wins (0-2):").pack(anchor=tk.W)
 ttk.Spinbox(left_frame, from_=0, to=2, textvariable=left_set_var).pack(fill=tk.X, pady=(0, 10))
+
+ttk.Label(left_frame, text="Set Stocks Taken:").pack(anchor=tk.W)
+ttk.Spinbox(left_frame, from_=0, to=99, textvariable=left_stocks_taken_var).pack(fill=tk.X, pady=(0, 10))
 
 ttk.Label(left_frame, text="Search/Select Character:").pack(anchor=tk.W)
 left_char_cb = ttk.Combobox(left_frame, textvariable=left_char_var, values=char_list)
@@ -464,6 +540,7 @@ ttk.Entry(middle_frame, textvariable=series_var, width=15).pack(pady=(0, 20))
 swap_btn = ttk.Button(middle_frame, text="⇄\nSwap\nSides", command=swap_sides)
 swap_btn.pack(expand=True)
 
+ttk.Checkbutton(middle_frame, text="Show Stocks Taken", variable=show_stocks_taken_var).pack(pady=(15, 0))
 
 # ================= PLAYER 2 (RIGHT) =================
 right_frame = ttk.LabelFrame(main_frame, text="Player 2 (Right)", padding=10)
@@ -487,6 +564,9 @@ ttk.Spinbox(right_frame, from_=0, to=99, textvariable=right_score_var).pack(fill
 
 ttk.Label(right_frame, text="Set Wins (0-2):").pack(anchor=tk.W)
 ttk.Spinbox(right_frame, from_=0, to=2, textvariable=right_set_var).pack(fill=tk.X, pady=(0, 10))
+
+ttk.Label(right_frame, text="Set Stocks Taken:").pack(anchor=tk.W)
+ttk.Spinbox(right_frame, from_=0, to=99, textvariable=right_stocks_taken_var).pack(fill=tk.X, pady=(0, 10))
 
 ttk.Label(right_frame, text="Search/Select Character:").pack(anchor=tk.W)
 right_char_cb = ttk.Combobox(right_frame, textvariable=right_char_var, values=char_list)
