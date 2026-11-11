@@ -179,7 +179,6 @@ is_auto_updating = False
 def auto_update_score(*args):
     global is_auto_updating
     
-    # If the script is already processing a score change, ignore the echoes!
     if is_auto_updating:
         return
         
@@ -194,18 +193,28 @@ def auto_update_score(*args):
         add_to_right = 0
         add_to_left = 0
 
-        if curr_l_name == tracker_state["left_name"] and curr_r_name == tracker_state["right_name"]:
-            if curr_l_score < tracker_state["left_score"]:
-                add_to_right = tracker_state["left_score"] - curr_l_score
+        # --- NEW: Reset Stocks Taken if player name changes ---
+        if curr_l_name != tracker_state["left_name"]:
+            left_stocks_taken_var.set(0)
             
-            if curr_r_score < tracker_state["right_score"]:
-                add_to_left = tracker_state["right_score"] - curr_r_score
+        if curr_r_name != tracker_state["right_name"]:
+            right_stocks_taken_var.set(0)
 
+        # Only check for stock drops if BOTH players are the same
+        if curr_l_name == tracker_state["left_name"] and curr_r_name == tracker_state["right_name"]:
+            if tracker_state["left_score"] - curr_l_score == 1:
+                add_to_right = 1
+            
+            if tracker_state["right_score"] - curr_r_score == 1:
+                add_to_left = 1
+
+        # Update Memory
         tracker_state["left_name"] = curr_l_name
         tracker_state["left_score"] = curr_l_score
         tracker_state["right_name"] = curr_r_name
         tracker_state["right_score"] = curr_r_score
 
+        # Apply points
         if add_to_right > 0:
             right_stocks_taken_var.set(right_stocks_taken_var.get() + add_to_right)
         if add_to_left > 0:
@@ -216,7 +225,6 @@ def auto_update_score(*args):
 
     update_overlay(silent=True)
     
-    # Unlock the script so it can listen for the next real click
     is_auto_updating = False
 
 def apply_character(side):
@@ -518,7 +526,7 @@ left_bg_frame.pack(fill=tk.X, pady=(0, 10))
 ttk.Entry(left_bg_frame, textvariable=left_bg_var).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
 ttk.Button(left_bg_frame, text="Browse...", command=lambda: browse_file(left_bg_var, "p1_bg")).pack(side=tk.LEFT)
 
-ttk.Label(left_frame, text="Logo Setup:").pack(anchor=tk.W)
+ttk.Label(left_frame, text="Team Logo:").pack(anchor=tk.W)
 left_logo_frame = ttk.Frame(left_frame)
 left_logo_frame.pack(fill=tk.X)
 ttk.Entry(left_logo_frame, textvariable=left_logo_var).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
